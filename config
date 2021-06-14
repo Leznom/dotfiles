@@ -1,0 +1,271 @@
+###
+# My sway config.     |    (Config with Dvorak layout)
+###
+
+## All variables
+#
+ # 'Super' key
+ set $mod Mod4
+
+ # Direction keys
+ set $left	r
+ set $down	t
+ set $up	n
+ set $right	s
+
+ # Wallpaper
+ set $wallpaper bg ~/Imágenes/DIO.png fill
+
+ # Default apps
+
+   # Terminal
+   set $term alacritty
+
+   # App launcher
+   set $menu wofi -I --show drun
+
+   # Nightlight program
+   set $nightlight wlsunset -l -60,431614 -L -31,775804 -t 3200 -T 6500
+
+   # Audio setings
+   set $pipe pipewire
+   set $morevol pactl set-sink-volume @DEFAULT_SINK@ +5%
+   set $minusvol pactl set-sink-volume @DEFAULT_SINK@ -5%
+  
+   # Screenshots
+       # Keys
+       set $ps1 Print
+       set $ps2 Control+Print
+       set $ps3 Alt+Print
+       set $ps4 Alt+Control+Print
+
+       # Commands
+       set $ss1 grim - | wl-copy
+       set $ss2 grim -g "$(slurp)" - | wl-copy
+       set $ss3 grim $(xdg-user-dir PICTURES)/ps_$(date +"%Y%m%d%H%M%S").png
+       set $ss4 grim -g "$(slurp)" $(xdg-user-dir PICTURES)/ps_$(date +"%Y%m%d%H%M%S").png
+
+   # Video Capture
+       # Interface
+       set $ad alsa_output.pci-0000_00_1b.0.analog-stereo.monitor
+
+       # Keys
+       set $ps5 $mod+Control+Print
+       set $ps6 $mod+Shift+Print
+       set $ps7 Ctrl+Shift+BackSpace
+
+       # Commands
+       set $ss5 wf-recorder --audio="$ad" -f ~/recording_$(date +"%Y-%m-%d_%H:%M:%S.mp4")
+       set $ss6 wf-recorder --audio="$ad" -g "$$(slurp)" -f ~/recording_$(date +"%Y-%m-%d_%H:%M:%S.mp4")
+       set $ss7 killall -s SIGINT wf-recorder
+       
+   # Backlight
+   set $lUP light -A 10
+   set $lDOWN light -U 10
+
+   # Extras
+   set $gnome-schema org.gnome.desktop.interface
+   set $gnome-sound org.gnome.desktop.sound   
+#
+##
+
+## Environment
+#
+ xwayland enabled  
+ gaps inner 3
+ default_border none
+ seat seat0 xcursor_theme "LyraR-cursors" 
+ exec_always {
+    gsettings set $gnome-schema gtk-theme "Nordic-darker"
+    gsettings set $gnome-schema icon-theme "Tela-purple"
+    gsettings set $gnome-schema cursor-theme "LyraR-cursors"
+    gsettings set $gnome-schema cursor-size 24
+    gsettings set $gnome-sound theme-name "Default"
+    $pipe
+    $nightlight
+    mako
+    }
+  
+#
+##
+
+## Output/input configuration
+#
+   # Output
+   output eDP-1 pos 0 0 res 1366x768
+   output * $wallpaper
+
+   # Input
+       # Keyboard
+       input "1:1:AT_Translated_Set_2_keyboard" {
+       xkb_layout latam
+       xkb_variant dvorak
+       repeat_delay 350
+       repeat_rate 25
+       }
+#
+##
+
+## Key bindings
+#
+ # Basics:
+   # Start a terminal
+   bindsym $mod+Return exec $term
+
+   # Kill focused window
+   bindsym $mod+Shift+q kill
+   
+   # Reload the configuration file
+   bindsym $mod+Shift+c reload
+   
+   # Exit sway
+   bindsym $mod+Shift+e exec swaynag -t warning -m '¿Ready?' -b 'Of course' 'swaymsg exit'
+   
+   # Start your launcher
+   bindsym $mod+u exec $menu
+
+   # Enable floating mode with mouse
+   floating_modifier $mod normal
+
+ # Custom
+   # Volume
+   bindsym XF86AudioRaiseVolume exec $morevol
+   bindsym XF86AudioLowerVolume exec $minusvol
+
+   # Screenshots
+   bindsym $ps1 exec $ss1
+   bindsym $ps2 exec $ss2
+   bindsym $ps3 exec $ss3
+   bindsym $ps4 exec $ss4
+   
+   # Video capture
+   bindsym $ps5 exec $ss5
+   bindsym $ps6 exec $ss6
+   bindsym $ps7 exec $ss7
+
+   # Backlight
+   bindsym XF86MonBrightnessUp exec $lUP
+   bindsym XF86MonBrightnessDown exec $lDOWN
+
+ # Moving around
+   # Move your focus around
+   bindsym $mod+$left focus left
+   bindsym $mod+$down focus down
+   bindsym $mod+$up focus up
+   bindsym $mod+$right focus right
+
+   # Or use $mod+[up|down|left|right]
+   bindsym $mod+Left focus left
+   bindsym $mod+Down focus down
+   bindsym $mod+Up focus up
+   bindsym $mod+Right focus right
+
+   # Move the focused window with the same, but add Shift
+   bindsym $mod+Shift+$left move left
+   bindsym $mod+Shift+$down move down
+   bindsym $mod+Shift+$up move up
+   bindsym $mod+Shift+$right move right
+
+   # Ditto, with arrow keys
+   bindsym $mod+Shift+Left move left
+   bindsym $mod+Shift+Down move down
+   bindsym $mod+Shift+Up move up
+   bindsym $mod+Shift+Right move right
+
+ # Workspaces
+   # Switch to workspace
+   bindsym $mod+1 workspace number 1
+   bindsym $mod+2 workspace number 2
+   bindsym $mod+3 workspace number 3
+   bindsym $mod+4 workspace number 4
+   bindsym $mod+5 workspace number 5
+   bindsym $mod+6 workspace number 6
+   bindsym $mod+7 workspace number 7
+   bindsym $mod+8 workspace number 8
+   bindsym $mod+9 workspace number 9
+   bindsym $mod+0 workspace number 10
+
+   # Move focused container to workspace
+   bindsym $mod+Shift+1 move container to workspace number 1
+   bindsym $mod+Shift+2 move container to workspace number 2
+   bindsym $mod+Shift+3 move container to workspace number 3
+   bindsym $mod+Shift+4 move container to workspace number 4
+   bindsym $mod+Shift+5 move container to workspace number 5
+   bindsym $mod+Shift+6 move container to workspace number 6
+   bindsym $mod+Shift+7 move container to workspace number 7
+   bindsym $mod+Shift+8 move container to workspace number 8
+   bindsym $mod+Shift+9 move container to workspace number 9
+   bindsym $mod+Shift+0 move container to workspace number 10
+    # Note: workspaces can have any name you want, not just numbers.
+    # We just use 1-10 as the default.
+
+   # Layout stuff
+    # You can "split" the current object of your focus with
+    # $mod+b or $mod+v, for horizontal and vertical splits
+    # respectively.
+   bindsym $mod+b splith
+   bindsym $mod+v splitv
+
+   # Switch the current container between different layout styles
+   bindsym $mod+Period layout stacking
+   bindsym $mod+Comma layout tabbed
+   bindsym $mod+Ntilde layout toggle split
+
+   # Make the current focus fullscreen
+   bindsym $mod+p fupllscreen
+
+   # Toggle the current focus between tiling and floating mode
+   bindsym $mod+Shift+space floating toggle
+
+   # Swap focus between the tiling area and the floating area
+   bindsym $mod+space focus mode_toggle
+
+   # Move focus to the parent container
+   bindsym $mod+a focus parent
+
+ # Scratchpad
+    # Sway has a "scratchpad", which is a bag of holding for windows.
+    # You can send windows there and get them back later.
+
+   # Move the currently focused window to the scratchpad
+   bindsym $mod+Shift+minus move scratchpad
+
+   # Show the next scratchpad window or hide the focused scratchpad win>
+   # If there are multiple scratchpad windows, this command cycles thro>
+   bindsym $mod+minus scratchpad show
+
+ # Resizing containers
+   mode "resize" {
+   # left will shrink the containers width
+   # right will grow the containers width
+   # up will shrink the containers height
+   # down will grow the containers height
+   bindsym $left resize shrink width 15px
+   bindsym $down resize grow height 15px
+   bindsym $up resize shrink height 15px
+   bindsym $right resize grow width 15px
+
+   # Ditto, with arrow keys
+   bindsym Left resize shrink width 15px
+   bindsym Down resize grow height 15px
+   bindsym Up resize shrink height 15px
+   bindsym Right resize grow width 15px
+
+   # Return to default mode
+   bindsym Return mode "default"
+   bindsym Escape mode "default"
+   }
+
+   bindsym $mod+o mode "resize"
+#
+##
+
+## Status bar
+#
+bar {
+    swaybar_command waybar
+}
+#
+##
+
+include /etc/sway/config.d/*
