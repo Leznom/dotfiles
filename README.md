@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="logogit.png">
+  <img src="logogit.jpg">
 </p>
 
 # dotfiles
